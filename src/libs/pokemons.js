@@ -38,7 +38,7 @@ export let pokemonList = [
     speed: 20,
     type: ["WATER"],
     weakness: ["GRASS", "ELECTRIC"],
-    moves: ["TACKLE", "TAIL WHIP", "BUBBLE", "WATER GUN"],
+    moves: ["TACKLE", "TAIL WHIP", "BUBBLE", "WITHDRAW"],
     back_default:
       "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/7.png",
     front_default:

@@ -1,4 +1,4 @@
-<footer class="mt-5 p-4 text-bg-dark text-center">
+<footer class="mt-3 p-4 text-bg-dark text-center">
   <p class="p-3 small">
     Brewed by Svelte<br />
     Designed by Bootstrap 5<br />
