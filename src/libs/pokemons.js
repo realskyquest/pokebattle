@@ -2,7 +2,7 @@ export let pokemonList = [
   {
     name: "BULBASAUR",
     level: 13,
-    hp: 36,
+    hp: 36111111 /* 36 */,
     attack: 20,
     defense: 17,
     speed: 20,
