@@ -185,6 +185,14 @@
           battleText = `${user.name} used ${move.name}!, ${target.name} attack won't go lower!`;
         }
       } else if (move.effect == "ENEMY DEFENSE STAT LOWER") {
+        if (target.defense > Math.floor(selectedTarget.defense / 2)) {
+          let effectValue = Math.floor(selectedTarget.defense * (1 / 8) * 1);
+          target.defense -= effectValue;
+          battleText = `${user.name} used ${move.name}, ${target.name} defense fell!`;
+        } else {
+          target.defense = Math.floor(selectedTarget.defense / 2);
+          battleText = `${user.name} used ${move.name}!, ${target.name} defense won't go lower!`;
+        }
         // Special effects
       } else if (move.effect == "SEEDED") {
         TargetEffects.SEEDED = true;
@@ -196,7 +204,23 @@
     if (mayChance > 85) {
       // May effect stats
       if (move.effect == "MAY USER ATTACK STAT RISE") {
+        if (user.attack < Math.floor(selectedUser.attack * 1.5)) {
+          let effectValue = Math.floor(selectedUser.attack * (1 / 8) * 1);
+          user.attack += effectValue;
+          battleText = `${user.name} used ${move.name}, ${user.name} attack rose!`;
+        } else {
+          user.attack = Math.floor(selectedUser.attack * 1.5);
+          battleText = `${user.name} used ${move.name}!, ${user.name} attact won't go higher!`;
+        }
       } else if (move.effect == "MAY ENEMY SPEED STAT LOWER") {
+        if (target.speed > Math.floor(selectedTarget.speed / 2)) {
+          let effectValue = Math.floor(selectedTarget.speed * (1 / 8) * 1);
+          target.speed -= effectValue;
+          battleText = `${user.name} used ${move.name}, ${target.name} speed fell!`;
+        } else {
+          target.speed = Math.floor(selectedTarget.speed / 2);
+          battleText = `${user.name} used ${move.name}!, ${target.name} speed won't go lower!`;
+        }
         // May special effects
       } else if (move.effect == "MAY BURN") {
         TargetEffects.BURN = true;
@@ -254,7 +278,9 @@
     }
 
     setTimeout(() => {
-      handleMove("TACKLE", "enemy");
+      let randomMoveIndex = Math.floor(Math.random() * pokemonB.moves.length);
+      let randomMove = pokemonB.moves[randomMoveIndex];
+      handleMove(randomMove, "enemy");
       if (hitAnim == true) {
         hitAnim = false;
         Aanim = "animate__flash";
