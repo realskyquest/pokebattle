@@ -14,7 +14,7 @@
       <button
         on:click={() => {
           window.location.href =
-            "https://github.com/realskyquest/pokemon-esque";
+            "https://github.com/realskyquest/pokebattle";
         }}
         type="button"
         class="btn text-light"

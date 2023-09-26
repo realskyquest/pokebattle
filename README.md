@@ -1,4 +1,4 @@
-# Pokemon esque
+# Pokébattle
 
 A html game made with svelte, and pure js
 

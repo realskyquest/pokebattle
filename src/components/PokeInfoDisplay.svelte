@@ -8,6 +8,8 @@
     src={selected_pokemon.front_default}
     alt="front of pokemon"
     class="card-img pixel"
+    width="100%"
+    height="100%"
   />
 </div>
 <div class="text-bg-primary text-center rounded-2">

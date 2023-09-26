@@ -113,8 +113,8 @@
     let weaknessFound = false;
 
     // Check if the move is super effective
-    for (let index in pokemonB.weakness) {
-      if (pokemonB.weakness[index] == move.type) {
+    for (let index in target.weakness) {
+      if (target.weakness[index] == move.type) {
         weaknessFound = true;
       }
     }
@@ -129,8 +129,8 @@
     }
 
     // Not very effective
-    for (let index in pokemonB.type) {
-      if (pokemonB.type[index] == move.type) {
+    for (let index in target.type) {
+      if (target.type[index] == move.type) {
         effectivenessMSG = ", not very effective";
         effectivenessMultiplier = 0.5;
       }
@@ -236,8 +236,8 @@
 
       target.hp -= damage;
       user.hp += damage;
-      if (pokemonA.hp >= selected_pokemonA.hp) {
-        pokemonA.hp = selected_pokemonA.hp;
+      if (user.hp >= selectedUser.hp) {
+        user.hp = selectedUser.hp;
       }
     }
     if (TargetEffects.BURN == true) {
@@ -266,6 +266,74 @@
     }
   }
 
+  function enemyAI_3() {
+    const validMoves = pokemonB.moves.filter((moveName) => {
+      const move = movesList[moveName];
+
+      // super effective
+      if (pokemonA.weakness.includes(move.type)) {
+        return true;
+      }
+
+      // not very effective
+      if (pokemonB.type.includes(move.type)) {
+        return true;
+      }
+
+      // normal
+      return false;
+    });
+
+    // There no type moves, choose a random move
+    if (validMoves.length === 0) {
+      return enemyAI_2();
+    }
+
+    // Choose a random move from the valid moves
+    const randomIndex = Math.floor(Math.random() * validMoves.length);
+    const selectedMove = movesList[validMoves[randomIndex]];
+
+    return selectedMove;
+  }
+
+  function enemyAI_2() {
+    // random move
+    let randomMoveIndex = Math.floor(Math.random() * pokemonB.moves.length);
+    let randomMove = movesList[pokemonB.moves[randomMoveIndex]];
+    return randomMove;
+  }
+
+  function enemyAI_1() {
+    const validMoves = pokemonB.moves.filter((moveName) => {
+      const move = movesList[moveName];
+      return move.power === "none" && move.effect !== "none";
+    });
+
+    // There are no effect moves, choose a random move
+    if (validMoves.length === 0) {
+      return enemyAI_2();
+    }
+
+    // Choose a random move from the valid moves
+    const randomIndex = Math.floor(Math.random() * validMoves.length);
+    const selectedMove = movesList[validMoves[randomIndex]];
+
+    return selectedMove;
+  }
+
+  function enemyAI() {
+    if (pokemonB.hp > Math.floor(selected_pokemonB.hp * 0.75)) {
+      // HP is over 75%
+      return enemyAI_1();
+    } else if (pokemonB.hp > Math.floor(selected_pokemonB.hp * 0.5)) {
+      // HP is over 50% but not 75%
+      return enemyAI_2();
+    } else {
+      // HP is 50% or lower
+      return enemyAI_3();
+    }
+  }
+
   // Handles the fight
   function handleFight(moveName) {
     moveChoosen = true;
@@ -278,9 +346,10 @@
     }
 
     setTimeout(() => {
-      let randomMoveIndex = Math.floor(Math.random() * pokemonB.moves.length);
-      let randomMove = pokemonB.moves[randomMoveIndex];
-      handleMove(randomMove, "enemy");
+      let enemyMove = enemyAI();
+      console.log(enemyMove.name);
+      handleMove(enemyMove.name, "enemy");
+
       if (hitAnim == true) {
         hitAnim = false;
         Aanim = "animate__flash";
@@ -295,12 +364,12 @@
         battleText = `${pokemonB.name} has fainted!`;
         fainted = true;
         Aanim = "";
-        Banim = "animate__zoomOut";
+        Banim = "animate__zoomOut animate__slower";
       } else if (pokemonA.hp == 0) {
         // Friend
-        battleText = `${pokemonB.name} used ${moveName}!, ${pokemonA.name} has fainted!`;
+        battleText = `${pokemonB.name} used ${enemyMove.name}!, ${pokemonA.name} has fainted!`;
         fainted = true;
-        Aanim = "animate__zoomOut";
+        Aanim = "animate__zoomOut animate__slower";
         Banim = "";
       }
 
@@ -340,6 +409,8 @@
             src={pokemonA.back_default}
             alt="front of pokemon"
             class="img-fluid m-5 pixel animate__animated animate__slower animate__infinite animate__shakeY"
+            width="50%"
+            height="50%"
           />
         </div>
       </div>
@@ -351,6 +422,8 @@
             src={pokemonB.front_default}
             alt="front of pokemon"
             class="img-fluid mt-5 m-5 pixel animate__animated animate__slower animate__infinite animate__shakeY animate__delay-1s"
+            width="50%"
+            height="50%"
           />
         </div>
       </div>

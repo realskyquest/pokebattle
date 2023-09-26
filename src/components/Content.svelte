@@ -20,7 +20,7 @@
         <PokeInfoDisplay selected_pokemon={pokemonA} />
       </div>
 
-      <div class="col p-3 bg-dark text-white">
+      <div class="col p-3 text-white">
         <div class="text-center">
           <p class="h1 mt-5">VS</p>
           <button
@@ -28,7 +28,7 @@
               battleStarted = true;
             }}
             type="button"
-            class="btn mt-5"
+            class="btn btn-lg mt-5"
             style="background-color: #eb564b;">BATTLE!</button
           >
           <div class="d-grid gap-3 mt-5">
