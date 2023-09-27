@@ -207,19 +207,19 @@
         if (user.attack < Math.floor(selectedUser.attack * 1.5)) {
           let effectValue = Math.floor(selectedUser.attack * (1 / 8) * 1);
           user.attack += effectValue;
-          battleText = `${user.name} used ${move.name}, ${user.name} attack rose!`;
+          battleText = `${user.name} used ${move.name}, ${user.name} attack rose! ${effectivenessMSG}`;
         } else {
           user.attack = Math.floor(selectedUser.attack * 1.5);
-          battleText = `${user.name} used ${move.name}!, ${user.name} attact won't go higher!`;
+          battleText = `${user.name} used ${move.name}!, ${user.name} attact won't go higher! ${effectivenessMSG}`;
         }
       } else if (move.effect == "MAY ENEMY SPEED STAT LOWER") {
         if (target.speed > Math.floor(selectedTarget.speed / 2)) {
           let effectValue = Math.floor(selectedTarget.speed * (1 / 8) * 1);
           target.speed -= effectValue;
-          battleText = `${user.name} used ${move.name}, ${target.name} speed fell!`;
+          battleText = `${user.name} used ${move.name}, ${target.name} speed fell! ${effectivenessMSG}`;
         } else {
           target.speed = Math.floor(selectedTarget.speed / 2);
-          battleText = `${user.name} used ${move.name}!, ${target.name} speed won't go lower!`;
+          battleText = `${user.name} used ${move.name}!, ${target.name} speed won't go lower! ${effectivenessMSG}`;
         }
         // May special effects
       } else if (move.effect == "MAY BURN") {
@@ -229,15 +229,17 @@
 
     // Handle special effects
     if (TargetEffects.SEEDED == true) {
-      battleText += `, ${target.name} was sapped!`;
-      let damage = Math.floor(
-        selectedTarget.hp * (1 / 8) * effectivenessMultiplier
-      );
+      if (user.hp !== 0) {
+        battleText += `, ${target.name} was sapped!`;
+        let damage = Math.floor(
+          selectedTarget.hp * (1 / 8) * effectivenessMultiplier
+        );
 
-      target.hp -= damage;
-      user.hp += damage;
-      if (user.hp >= selectedUser.hp) {
-        user.hp = selectedUser.hp;
+        target.hp -= damage;
+        user.hp += damage;
+        if (user.hp >= selectedUser.hp) {
+          user.hp = selectedUser.hp;
+        }
       }
     }
     if (TargetEffects.BURN == true) {
@@ -270,24 +272,30 @@
     const validMoves = pokemonB.moves.filter((moveName) => {
       const move = movesList[moveName];
 
-      // super effective
-      if (pokemonA.weakness.includes(move.type)) {
+      // Check if the move is super effective
+      if (pokemonA.weakness.includes(move.type) && move.power !== "none") {
         return true;
       }
 
-      // not very effective
-      if (pokemonB.type.includes(move.type)) {
-        return true;
-      }
-
-      // normal
       return false;
     });
 
+    // If there are no super effective moves, include normal moves
+    if (validMoves.length === 0) {
+      const normalMoves = pokemonB.moves.filter((moveName) => {
+        const move = movesList[moveName];
+        return move.power !== "none";
+      });
+      validMoves.push(...normalMoves);
+    }
+
     // There no type moves, choose a random move
     if (validMoves.length === 0) {
+      console.log(": (");
       return enemyAI_2();
     }
+
+    console.log(validMoves);
 
     // Choose a random move from the valid moves
     const randomIndex = Math.floor(Math.random() * validMoves.length);
@@ -347,8 +355,9 @@
 
     setTimeout(() => {
       let enemyMove = enemyAI();
-      console.log(enemyMove.name);
-      handleMove(enemyMove.name, "enemy");
+      if (pokemonB.hp !== 0) {
+        handleMove(enemyMove.name, "enemy");
+      }
 
       if (hitAnim == true) {
         hitAnim = false;
@@ -407,7 +416,7 @@
         <div class="animate__animated {Aanim}">
           <img
             src={pokemonA.back_default}
-            alt="front of pokemon"
+            alt="my pokemon"
             class="img-fluid m-5 pixel animate__animated animate__slower animate__infinite animate__shakeY"
             width="50%"
             height="50%"
@@ -420,7 +429,7 @@
         <div class="animate__animated {Banim}">
           <img
             src={pokemonB.front_default}
-            alt="front of pokemon"
+            alt="enemy pokemon"
             class="img-fluid mt-5 m-5 pixel animate__animated animate__slower animate__infinite animate__shakeY animate__delay-1s"
             width="50%"
             height="50%"
